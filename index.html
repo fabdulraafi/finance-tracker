@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker Dashboard</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="first.js" defer></script>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header class="header">
+            <h1>Finance Dashboard</h1>
+            <p>Welcome back, here's your financial overview.</p>
+        </header>
+
+        <main class="main-grid">
+            
+            <div class="main-content">
+                
+                <section class="summary-grid">
+                    <div class="card">
+                        <h2>Total Credits</h2>
+                        <p id="total-credits" class="amount credit">$0.00</p>
+                    </div>
+                    <div class="card">
+                        <h2>Total Debits</h2>
+                        <p id="total-debits" class="amount debit">$0.00</p>
+                    </div>
+                    <div class="card">
+                        <h2>Net Balance</h2>
+                        <p id="net-balance" class="amount balance">$0.00</p>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>Spending by Category</h2>
+                    <div class="chart-container">
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                </section>
+
+                <section class="card">
+                    <h2>Investment Portfolio</h2>
+                    <div class="table-container">
+                        <table class="portfolio-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th class="text-right">Value</th>
+                                    <th class="text-right hide-sm">Price</th>
+                                    <th class="text-right">24h Change</th>
+                                </tr>
+                            </thead>
+                            <tbody id="portfolio-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div class="sidebar">
+                <section class="card">
+                    <h2>Add New Transaction</h2>
+                    <form id="add-transaction-form" class="transaction-form">
+                        <input type="text" id="description" placeholder="Description" required>
+                        <input type="number" id="amount" placeholder="Amount" step="0.01" required>
+                        <input type="text" id="category" placeholder="Category" required>
+                        <select id="type" required>
+                            <option value="debit">Debit (Expense)</option>
+                            <option value="credit">Credit (Income)</option>
+                        </select>
+                        <button type="submit" class="btn">Add Transaction</button>
+                    </form>
+                </section>
+                
+                <section class="card full-height transactions-card">
+                    <h2>Recent Transactions</h2>
+                    <div id="transaction-list" class="transaction-list">
+                        <!-- transaction data from js-->
+                    </div>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
+
