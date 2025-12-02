@@ -113,9 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // chart
-    function renderSpendingChartFromScratch() {
+    let myChart = null; 
+    function renderSpendingChart() {
         const spendingData = transactions
-            .filter(t => t.type === 'debit' && t.amount > 0)
+            .filter(t => t.type === 'debit')
             .reduce((acc, t) => {
                 acc[t.category] = (acc[t.category] || 0) + t.amount;
                 return acc;
@@ -123,42 +124,35 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const categories = Object.keys(spendingData);
         const amounts = Object.values(spendingData);
-        const totalSpending = amounts.reduce((sum, amount) => sum + amount, 0);
-        const colors = ['#34d399', '#60a5fa', '#f87171', '#fbbf24', '#a78bfa', '#ec4899']; 
 
-        const rect = canvas.getBoundingClientRect();
+        const ctx = document.getElementById('spendingChart').getContext('2d')
 
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (categories.length === 0) {
-            ctx.fillStyle = '#9ca3af';
-            ctx.textAlign = 'center';
-            ctx.font = "16px 'Inter'";
-            ctx.fillText("No spending data to display.", canvas.width / 2, canvas.height / 2);
-            return;
+        if (myChart) {
+            myChart.destroy();
         }
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = Math.min(centerX, centerY) * 0.8;
-        let startAngle = -0.5 * Math.PI; 
-
-        categories.forEach((category, i) => {
-            const sliceAngle = (amounts[i] / totalSpending) * 2 * Math.PI;
-            const endAngle = startAngle + sliceAngle;
-            
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-            ctx.closePath();
-            
-            ctx.fillStyle = colors[i % colors.length];
-            ctx.fill();
-            
-            startAngle = endAngle;
+        myChart = new Chart (ctx, {
+            type: 'pie',
+            data:{
+                labels: categories,
+                datasets: [{
+                    labels: 'Spending Amount',
+                    data: amounts,
+                    backgroundColor: [
+                        '#34d399', '#60a5fa', '#f87171', '#fbbf24', '#a78bfa', '#ec4899'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    }
+                }
+            }
         });
     }
 
@@ -192,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateUI() {
         renderSummary();
         renderTransactions();
-        renderSpendingChartFromScratch();
+        renderSpendingChart();
     }
     
     addTransactionForm.addEventListener('submit', addTransaction);

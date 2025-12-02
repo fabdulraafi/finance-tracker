@@ -3,96 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Tracker Dashboard</title>
+    <title>FinanceFlow</title>
     
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <script src="first.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
 
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">
+                <div class="logo-icon">✨</div>
+                <h1>TrackFinance</h1>
+            </div>
+            <button id="open-modal-btn" class="btn-primary">
+                <span>+</span> New Transaction
+            </button>
+        </div>
+    </nav>
+
     <div class="container">
-        
-        <header class="header">
-            <h1>Finance Dashboard</h1>
-            <p>Welcome back, here's your financial overview.</p>
-        </header>
+        <!-- Summary -->
+        <section class="summary-grid">
+            <div class="card summary-card">
+                <div class="card-icon icon-green">↓</div>
+                <div>
+                    <h3>Total Income</h3>
+                    <p id="total-credits" class="amount text-green">$0.00</p>
+                </div>
+            </div>
+            <div class="card summary-card">
+                <div class="card-icon icon-red">↑</div>
+                <div>
+                    <h3>Total Expenses</h3>
+                    <p id="total-debits" class="amount text-red">$0.00</p>
+                </div>
+            </div>
+            <div class="card summary-card">
+                <div class="card-icon icon-blue">$</div>
+                <div>
+                    <h3>Net Balance</h3>
+                    <p id="net-balance" class="amount text-blue">$0.00</p>
+                </div>
+            </div>
+        </section>
 
         <main class="main-grid">
-            
-            <div class="main-content">
-                
-                <section class="summary-grid">
-                    <div class="card">
-                        <h2>Total Credits</h2>
-                        <p id="total-credits" class="amount credit">$0.00</p>
-                    </div>
-                    <div class="card">
-                        <h2>Total Debits</h2>
-                        <p id="total-debits" class="amount debit">$0.00</p>
-                    </div>
-                    <div class="card">
-                        <h2>Net Balance</h2>
-                        <p id="net-balance" class="amount balance">$0.00</p>
-                    </div>
-                </section>
-
+            <div class="left-col">
                 <section class="card">
-                    <h2>Spending by Category</h2>
+                    <div class="card-header">
+                        <h2>Analytics</h2>
+                        <span class="badge">Spending</span>
+                    </div>
                     <div class="chart-container">
                         <canvas id="spendingChart"></canvas>
                     </div>
                 </section>
 
+                <!-- Live Market Price -->
                 <section class="card">
-                    <h2>Investment Portfolio</h2>
+                    <div class="card-header">
+                        <h2>Market Trends</h2>
+                        <span class="badge live">Live</span>
+                    </div>
+                    <div class="chart-container-sm">
+                        <canvas id="liveChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Investment Portfolio -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>My Portfolio</h2>
+                    </div>
                     <div class="table-container">
                         <table class="portfolio-table">
                             <thead>
                                 <tr>
                                     <th>Asset</th>
-                                    <th class="text-right">Value</th>
-                                    <th class="text-right hide-sm">Price</th>
-                                    <th class="text-right">24h Change</th>
+                                    <th class="text-right">Price</th>
+                                    <th class="text-right">Change</th>
                                 </tr>
                             </thead>
-                            <tbody id="portfolio-body">
-                            </tbody>
+                            <tbody id="portfolio-body"></tbody>
                         </table>
                     </div>
                 </section>
             </div>
 
-            <div class="sidebar">
+            <!-- right side - transactions-->
+            <div class="right-col">
                 <section class="card">
-                    <h2>Add New Transaction</h2>
-                    <form id="add-transaction-form" class="transaction-form">
-                        <input type="text" id="description" placeholder="Description" required>
-                        <input type="number" id="amount" placeholder="Amount" step="0.01" required>
-                        <input type="text" id="category" placeholder="Category" required>
-                        <select id="type" required>
-                            <option value="debit">Debit (Expense)</option>
-                            <option value="credit">Credit (Income)</option>
-                        </select>
-                        <button type="submit" class="btn">Add Transaction</button>
-                    </form>
-                </section>
-                
-                <section class="card full-height transactions-card">
-                    <h2>Recent Transactions</h2>
-                    <div id="transaction-list" class="transaction-list">
-                        <!-- transaction data from js-->
+                    <div class="card-header">
+                        <h2>Recent Transactions</h2>
+                        <button class="btn-text">View All</button>
                     </div>
+                    <div id="transaction-list" class="transaction-list"></div>
                 </section>
             </div>
-
         </main>
     </div>
 
+    <!-- add transaction button -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Transaction</h2>
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+            </div>
+            <form id="add-transaction-form" class="transaction-form">
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="description" placeholder="e.g. Netflix" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="type" required>
+                            <option value="debit">Expense</option>
+                            <option value="credit">Income</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="category" placeholder="e.g. Entertainment" required>
+                </div>
+                <button type="submit" class="btn-primary full-width">Save Transaction</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
-
